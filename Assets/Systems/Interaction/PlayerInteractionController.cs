@@ -10,6 +10,14 @@ public class PlayerInteractionController : MonoBehaviour
 
     [SerializeField] private GameObject debugCurrentInteractable;
 
+    [SerializeField] private UIManager uiManager;
+
+    private void Awake()
+    {
+        uiManager = ServiceHub.Instance.UIManager;
+
+        if (uiManager == null) Debug.LogError("UIManager not found in ServiceHub.");
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -18,6 +26,7 @@ public class PlayerInteractionController : MonoBehaviour
             targetInteractable = foundInteractable;
             debugCurrentInteractable = collision.gameObject;
 
+            uiManager.ShowPrompt();
 
         }
     }
@@ -29,7 +38,7 @@ public class PlayerInteractionController : MonoBehaviour
             targetInteractable = null;
             debugCurrentInteractable = null;
 
-
+            uiManager.HidePrompt();
         }
     }
 
@@ -39,6 +48,8 @@ public class PlayerInteractionController : MonoBehaviour
         if (context.performed)
         {
             if (debugEnabled) Debug.Log("Attempting to interact");
+
+            uiManager.HidePrompt();
 
             if (targetInteractable != null)
             {
